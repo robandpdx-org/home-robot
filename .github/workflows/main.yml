@@ -1,0 +1,96 @@
+name: facebookresearch/home-robot/main
+on:
+  push:
+    branches:
+    - main
+jobs:
+  lint:
+    defaults:
+      run:
+        working-directory: "~/home-robot"
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.8
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Running precommit checks
+      run: |
+        pip install pre-commit
+        pre-commit install-hooks
+        pre-commit run --all-files
+  home_robot:
+    defaults:
+      run:
+        working-directory: "~/home-robot"
+    runs-on: ubuntu-latest
+    env:
+      FPS_THRESHOLD: 900
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Install system deps
+      run: |
+        sudo apt-get update || true
+        sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            git \
+            curl \
+            vim \
+            ca-certificates \
+            g++ \
+            python-dev autotools-dev libicu-dev libbz2-dev \
+            libboost-all-dev \
+            unzip || true
+    - uses: "./.github/actions/conda_env_setup"
+    - name: Install libraries and run tests
+      run: |
+        conda activate ~/env_home_robot
+        pip install -e src/home_robot
+        cd tests/home_robot
+        pytest .
+  home_robot_sim:
+    defaults:
+      run:
+        working-directory: "~/home-robot"
+    runs-on: ubuntu-latest
+    env:
+      FPS_THRESHOLD: 900
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Install system deps
+      run: |
+        sudo apt-get update || true
+        sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            git \
+            curl \
+            vim \
+            ca-certificates \
+            libbullet-dev \
+            libjpeg-dev \
+            libglm-dev \
+            libegl1-mesa-dev \
+            xorg-dev \
+            freeglut3-dev \
+            pkg-config \
+            wget \
+            zip \
+            libhdf5-dev \
+            unzip || true
+    - name: Sync submodules
+      run: git submodule sync && git submodule update --init src/third_party/habitat-lab
+    - uses: "./.github/actions/conda_env_setup"
+    - name: Install home-robot-sim dependencies & download data
+      run: |
+        conda activate ~/env_home_robot
+        mamba env update -f src/home_robot_sim/environment.yml
+        pip install -e src/third_party/habitat-lab
+        python -m habitat_sim.utils.datasets_download --uids mp3d_example_scene --data-path data/
+        mkdir -p tests/home_robot_sim/data/scene_datasets/mp3d_example/mp3d
+        mv data/scene_datasets/mp3d_example/17DRP5sb8fy tests/home_robot_sim/data/scene_datasets/mp3d_example/mp3d
+    - name: Install libraries and run tests
+      run: |
+        conda activate ~/env_home_robot
+        pip install -e src/home_robot
+        pip install -e src/home_robot_sim
+        cd tests/home_robot_sim
+        pytest .
