@@ -25,13 +25,14 @@ jobs:
     - name: Install system deps
       run: |
         sudo apt-get update
-        sudo apt-get install -y --no-install-recommends build-essential vim ca-certificates python3-dev autotools-dev libicu-dev libbz2-dev libboost-all-dev
+        sudo apt-get install -y --no-install-recommends build-essential vim ca-certificates python3-dev autotools-dev libicu-dev libbz2-dev libboost-all-dev pandoc
     - name: Setup Conda environment
       uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: env_home_robot
     - name: Run tests
       run: |
+        conda install -n base --override-channels -c conda-forge mamba 'python_abi=*=*cp*' pinocchio>=2.6.17 -y
         pip install torch pypandoc==1.5
         pip install -e src/home_robot
         cd tests/home_robot
@@ -56,6 +57,7 @@ jobs:
         activate-environment: env_home_robot
     - name: Install home-robot-sim dependencies & download data
       run: |
+        conda install -n base --override-channels -c conda-forge mamba 'python_abi=*=*cp*' pinocchio>=2.6.17 -y
         mamba env update -f src/home_robot_sim/environment.yml
         pip install -e src/third_party/habitat-lab
         python -m habitat_sim.utils.datasets_download --uids mp3d_example_scene --data-path data/
