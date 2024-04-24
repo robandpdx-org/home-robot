@@ -5,23 +5,18 @@ on:
     - main
 jobs:
   lint:
-    defaults:
-      run:
-        working-directory: "~/home-robot"
     runs-on: ubuntu-latest
-    container:
-      image: python:3.8
     steps:
     - uses: actions/checkout@v4.1.0
+    - uses: actions/setup-python@v5
+    with:
+      python-version: '3.8'
     - name: Running precommit checks
       run: |
         pip install pre-commit
         pre-commit install-hooks
         pre-commit run --all-files
   home_robot:
-    defaults:
-      run:
-        working-directory: "~/home-robot"
     runs-on: ubuntu-latest
     env:
       FPS_THRESHOLD: 900
@@ -32,14 +27,10 @@ jobs:
         sudo apt-get update || true
         sudo apt-get install -y --no-install-recommends \
             build-essential \
-            git \
-            curl \
             vim \
             ca-certificates \
-            g++ \
             python-dev autotools-dev libicu-dev libbz2-dev \
-            libboost-all-dev \
-            unzip || true
+            libboost-all-dev || true
     - uses: "./.github/actions/conda_env_setup"
     - name: Install libraries and run tests
       run: |
@@ -48,9 +39,6 @@ jobs:
         cd tests/home_robot
         pytest .
   home_robot_sim:
-    defaults:
-      run:
-        working-directory: "~/home-robot"
     runs-on: ubuntu-latest
     env:
       FPS_THRESHOLD: 900
@@ -61,8 +49,6 @@ jobs:
         sudo apt-get update || true
         sudo apt-get install -y --no-install-recommends \
             build-essential \
-            git \
-            curl \
             vim \
             ca-certificates \
             libbullet-dev \
@@ -71,11 +57,7 @@ jobs:
             libegl1-mesa-dev \
             xorg-dev \
             freeglut3-dev \
-            pkg-config \
-            wget \
-            zip \
-            libhdf5-dev \
-            unzip || true
+            libhdf5-dev || true
     - name: Sync submodules
       run: git submodule sync && git submodule update --init src/third_party/habitat-lab
     - uses: "./.github/actions/conda_env_setup"
