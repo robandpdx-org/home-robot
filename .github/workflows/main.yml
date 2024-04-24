@@ -36,7 +36,9 @@ jobs:
         conda info -a
     - name: Run tests
       run: |
-        conda init && conda activate ~/env_home_robot
+        conda init bash
+        source ~/.bashrc
+        conda activate ~/env_home_robot
         pip install -e src/home_robot
         cd tests/home_robot
         pytest .
