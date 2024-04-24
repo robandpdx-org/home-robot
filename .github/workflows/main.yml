@@ -26,7 +26,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends build-essential vim ca-certificates python3-dev autotools-dev libicu-dev libbz2-dev libboost-all-dev
-    - name: Setup Conda environment and run tests
+    - name: Setup Conda environment
       run: |
         curl -o ~/miniconda.sh -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
         bash ~/miniconda.sh -b -p $HOME/miniconda
@@ -34,6 +34,8 @@ jobs:
         conda config --set always_yes yes --set changeps1 no
         conda update -q conda
         conda info -a
+    - name: Run tests
+      run: |
         conda init
         conda activate ~/env_home_robot
         pip install -e src/home_robot
