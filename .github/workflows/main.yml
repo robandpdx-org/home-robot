@@ -32,8 +32,6 @@ jobs:
         activate-environment: env_home_robot
     - name: Run tests
       run: |
-        conda config --set always_yes yes --set changeps1 no
-        conda info -a
         pip install torch pypandoc
         pip install -e src/home_robot
         cd tests/home_robot
