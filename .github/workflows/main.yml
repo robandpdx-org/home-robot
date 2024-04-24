@@ -31,7 +31,7 @@ jobs:
             ca-certificates \
             python-dev autotools-dev libicu-dev libbz2-dev \
             libboost-all-dev || true
-    - uses: ".github/actions/conda_env_setup"
+    - uses: "./.github/actions/conda_env_setup"
     - name: Install libraries and run tests
       run: |
         conda activate ~/env_home_robot
@@ -60,7 +60,7 @@ jobs:
             libhdf5-dev || true
     - name: Sync submodules
       run: git submodule sync && git submodule update --init src/third_party/habitat-lab
-    - uses: ".github/actions/conda_env_setup"
+    - uses: "./.github/actions/conda_env_setup"
     - name: Install home-robot-sim dependencies & download data
       run: |
         conda activate ~/env_home_robot
