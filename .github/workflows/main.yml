@@ -52,10 +52,12 @@ jobs:
       run: |
         git submodule sync
         git submodule update --init src/third_party/habitat-lab
-    - uses: "./.github/actions/conda_env_setup"
+    - name: Setup Conda environment
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: env_home_robot
     - name: Install home-robot-sim dependencies & download data
       run: |
-        conda activate ~/env_home_robot
         mamba env update -f src/home_robot_sim/environment.yml
         pip install -e src/third_party/habitat-lab
         python -m habitat_sim.utils.datasets_download --uids mp3d_example_scene --data-path data/
@@ -63,7 +65,6 @@ jobs:
         mv data/scene_datasets/mp3d_example/17DRP5sb8fy tests/home_robot_sim/data/scene_datasets/mp3d_example/mp3d
     - name: Install libraries and run tests
       run: |
-        conda activate ~/env_home_robot
         pip install -e src/home_robot
         pip install -e src/home_robot_sim
         cd tests/home_robot_sim
