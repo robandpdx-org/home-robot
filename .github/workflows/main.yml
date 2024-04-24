@@ -32,7 +32,7 @@ jobs:
         activate-environment: env_home_robot
     - name: Run tests
       run: |
-        pip install torch pypandoc
+        pip install torch pypandoc==1.5
         pip install -e src/home_robot
         cd tests/home_robot
         pytest .
