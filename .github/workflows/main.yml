@@ -7,15 +7,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.0
-    - uses: actions/setup-python@v5
-    with:
-      python-version: '3.8'
-    - name: Running precommit checks
-      run: |
-        pip install pre-commit
-        pre-commit install-hooks
-        pre-commit run --all-files
+      - uses: actions/checkout@v4.1.0
+      - name: Running precommit checks
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+          run: |
+            pip install pre-commit
+            pre-commit install-hooks
+            pre-commit run --all-files
   home_robot:
     runs-on: ubuntu-latest
     env:
