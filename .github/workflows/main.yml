@@ -33,7 +33,7 @@ jobs:
     - name: Run tests
       run: |
         conda install -n env_home_robot -y -c conda-forge pinocchio>=2.6.17
-        pip install torch pypandoc
+        pip install torch pypandoc<1.8
         pip install -e src/home_robot
         cd tests/home_robot
         pytest .
@@ -58,7 +58,7 @@ jobs:
     - name: Install home-robot-sim dependencies & download data
       run: |
         conda install -n env_home_robot -y -c conda-forge pinocchio>=2.6.17
-        sudo pip install -e src/third_party/habitat-lab
+        pip install -e src/third_party/habitat-lab
         python -m habitat_sim.utils.datasets_download --uids mp3d_example_scene --data-path data/
         mkdir -p tests/home_robot_sim/data/scene_datasets/mp3d_example/mp3d
         mv data/scene_datasets/mp3d_example/17DRP5sb8fy tests/home_robot_sim/data/scene_datasets/mp3d_example/mp3d
