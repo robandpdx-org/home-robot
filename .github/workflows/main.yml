@@ -33,7 +33,7 @@ jobs:
     - name: Run tests
       run: |
         conda install -n env_home_robot -y -c conda-forge pinocchio>=2.6.17
-        pip install torch pypandoc<1.8
+        pip install torch 'pypandoc<1.8'
         pip install -e src/home_robot
         cd tests/home_robot
         pytest .
